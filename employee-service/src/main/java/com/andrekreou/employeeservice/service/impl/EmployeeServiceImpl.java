@@ -3,6 +3,7 @@ package com.andrekreou.employeeservice.service.impl;
 import com.andrekreou.employeeservice.dto.APIResponseDto;
 import com.andrekreou.employeeservice.dto.DepartmentDto;
 import com.andrekreou.employeeservice.dto.EmployeeDto;
+import com.andrekreou.employeeservice.dto.OrganisationDto;
 import com.andrekreou.employeeservice.entity.Employee;
 import com.andrekreou.employeeservice.mapper.EmployeeMapper;
 import com.andrekreou.employeeservice.repository.EmployeeRepository;
@@ -57,11 +58,18 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         //DepartmentDto departmentDto = apiClient.getDepartment(employee.getDepartmentCode());
 
+        OrganisationDto organisationDto = webClient.get()
+                .uri("http://localhost:8083/api/organisations/" + employee.getOrganisationCode())
+                .retrieve()
+                .bodyToMono(OrganisationDto.class)
+                .block();
+
         EmployeeDto employeeDto = EmployeeMapper.mapToEmployeeDto(employee);
 
         APIResponseDto apiResponseDto = new APIResponseDto();
         apiResponseDto.setEmployee(employeeDto);
         apiResponseDto.setDepartment(departmentDto);
+        apiResponseDto.setOrganisation(organisationDto);
 
         return apiResponseDto;
     }
